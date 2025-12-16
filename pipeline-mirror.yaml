@@ -23,4 +23,4 @@ stages:
         parameters:
           github_repo_resource_alias: "self"
           azure_repo_name: "malcarve-cbl"
-          azure_projejct: "CyberLab-Services"
+          azure_project: "CyberLab-Services"
