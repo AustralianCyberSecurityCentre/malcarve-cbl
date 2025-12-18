@@ -17,8 +17,10 @@ class CBuild(build):
         subprocess.run(build_script_path, check=True)
         build.run(self)
 
+
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
+
 
 def open_file(fname):
     """Open and return a file-like object for the relative filename."""
@@ -38,15 +40,15 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.12',
-        'Programming Language :: Python :: 3.13',
-        'Programming Language :: Python :: 3.14',
-        'Intended Audience :: Developers',
-        'Topic :: Software Development :: Libraries',
+        "Development Status :: 5 - Production/Stable",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: Libraries",
     ],
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
