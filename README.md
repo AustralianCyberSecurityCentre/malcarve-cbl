@@ -56,3 +56,8 @@ xor(key:0x79, bytes:1, increment:13)
 ```
 
 In this case, malcarve found an url which had been xor'd, then base64 encoded twice. the xor was identified as being a 2 byte incrementing xor where every time a set of 2 bytes were encoded, the key incremented by 13. The starting key was 0x79.
+
+
+## Acknowledgements
+
+This repository was based off of https://github.com/shendo/malcarve
