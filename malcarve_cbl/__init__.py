@@ -205,8 +205,7 @@ def get_encoding_info(
         key_string = "0x" + key_string
 
         locationInfo.keyed_encoding_string = (
-            f"{str(keyed_encoding.encoding).split('.')[-1].lower()}"
-            f"(key:{key_string}, bytes:{keyed_encoding.key_size}"
+            f"{str(keyed_encoding.encoding).split('.')[-1].lower()}(key:{key_string}, bytes:{keyed_encoding.key_size}"
         )
         if keyed_encoding.increment != 0:
             locationInfo.keyed_encoding_string += f", increment:{keyed_encoding.increment}"
