@@ -278,3 +278,7 @@ tags
 
 # vscode stuff
 .vscode/
+
+.ruff_cache
+# FUTURE UV IS USEFUL
+uv.lock
