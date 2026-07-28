@@ -11,16 +11,16 @@ from enum import IntEnum
 from keyword import iskeyword, issoftkeyword
 from sys import argv
 
-import black
+import black  # ty: ignore[unresolved-import]
 
 
 class ParamType(IntEnum):
     """Markup on C function parameter."""
 
-    IN: int = 0
-    OUT: int = 1
-    LIST_OUT: int = 2
-    BYTES_OUT: int = 3
+    IN = 0
+    OUT = 1
+    LIST_OUT = 2
+    BYTES_OUT = 3
 
 
 param_type_list: list[str] = []
@@ -31,7 +31,7 @@ for param_type_index in range(len(ParamType)):
 class Param:
     """C function parameter."""
 
-    paramtype: ParamType
+    paramtype: ParamType | int
     datatype: str
     pointer_count: int
     name: str
@@ -53,14 +53,14 @@ class Function:
     return_pointer_count: int
 
 
-def read_structs(c_content: bytes) -> list[Struct]:
+def read_structs(c_content: str) -> list[Struct]:
     """Read C structs into list."""
     structs: list[Struct] = []
 
     name = r"[^{};\s]+"
     struct_pattern: str = rf"typedef struct ({name}) {{ ((?: {name} {name};)+) }} ({name});"
     struct_pattern = struct_pattern.replace(r" ", r"\s+")
-    for match in re.finditer(struct_pattern, c_content):
+    for match in re.finditer(str(struct_pattern), c_content):
         if match.group(1) != match.group(3):
             continue
         struct: Struct = Struct()
@@ -82,7 +82,7 @@ def read_structs(c_content: bytes) -> list[Struct]:
     return structs
 
 
-def read_functions(c_content: bytes) -> list[Function]:
+def read_functions(c_content: str) -> list[Function]:
     """Read C functions into list."""
     functions: list[Function] = []
 
@@ -97,7 +97,7 @@ def read_functions(c_content: bytes) -> list[Function]:
         param_type_pattern += f"PY_{param_type.name}"
     function_pattern = function_pattern.replace(r"\P", rf"(?:{param_type_pattern})")
 
-    for match in re.finditer(function_pattern, c_content):
+    for match in re.finditer(str(function_pattern), c_content):
         function: Function = Function()
         function.return_type = match.group(1)
         function.return_pointer_count = len(match.group(2))
@@ -129,7 +129,7 @@ def wrap_in_function(var_name: str, func_name: str, wrap_count: int) -> str:
 
 
 def type_c_to_py(
-    type: str, pointer_count: int, type_translations: dict[str, tuple[str, type]], ctype_equiv: bool
+    type: str, pointer_count: int, type_translations: dict[str, tuple[str, str]], ctype_equiv: bool
 ) -> str:
     """Convert C type to Python type."""
     if type == "void" and pointer_count > 0:
@@ -151,7 +151,7 @@ def var_c_to_py(
     var: str,
     type: str,
     pointer_count: int,
-    type_translations: dict[str, tuple[str, type]],
+    type_translations: dict[str, tuple[str, str]],
 ) -> str:
     """Convert C variable to Python variable."""
     if type == "void" and pointer_count > 0:
@@ -169,7 +169,7 @@ def var_c_to_py(
 
 def generate(c_path: str, so_path: str, py_path: str):
     """Generate C-Python interop file."""
-    type_translations: dict[str, tuple[str, type]] = {
+    type_translations: dict[str, tuple[str, str]] = {
         "u8": ("c_uint8", "int"),
         "u32": ("c_uint32", "int"),
         "u64": ("c_uint64", "int"),
@@ -179,7 +179,7 @@ def generate(c_path: str, so_path: str, py_path: str):
         "void": ("None", "None"),
     }
 
-    c_content: bytes = b""
+    c_content: str = ""
     with open(c_path, "r") as c_file:
         c_content = c_file.read()
     dest_path = os.path.relpath(so_path, os.path.dirname(py_path))
@@ -387,9 +387,9 @@ c_lib: CDLL = cdll.LoadLibrary(os.path.join(os.path.dirname(__file__), "{dest_pa
 
 
 if __name__ == "__main__":
-    c_path: str = None
-    so_path: str = None
-    py_path: str = None
+    c_path: str | None = None
+    so_path: str | None = None
+    py_path: str | None = None
 
     arg_index: int = 1
     path_index: int = 0

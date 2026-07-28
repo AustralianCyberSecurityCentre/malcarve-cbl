@@ -6,7 +6,7 @@ def as_uint(b: bytes, index: int, count: int) -> int:
     return int.from_bytes(b[index : index + count], "little")
 
 
-def as_bytes(b: bytes, index: int, count: int) -> int:
+def as_bytes(b: bytes, index: int, count: int) -> bytes:
     """Take a slice of the provided bytes."""
     return b[index : index + count]
 

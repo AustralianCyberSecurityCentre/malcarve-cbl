@@ -95,7 +95,7 @@ def add_valid_formats(
     offset_to_buffer: int,
     section: EncodedSection,
     format_type: FormatEnum,
-    encoding: KeyedEncoding,
+    encoding: KeyedEncoding | None,
     single_result: bool,
 ):
     """Checks to validate the existence of a format and add it to the list."""

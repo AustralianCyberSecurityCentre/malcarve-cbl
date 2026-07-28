@@ -50,9 +50,9 @@ class FormatInfo:
     # first bytes that are expected to already be there.
     # this is used to determine the first key in a rolling obfuscation.
     # only necessary if pattern.offset > 0.
-    header: bytes
+    header: bytes | None
 
-    def __init__(self, type: FormatEnum, patterns: list, header: bytes):
+    def __init__(self, type: FormatEnum, patterns: list[FormatPattern], header: bytes | None):
         self.type = type
         self.patterns = patterns
         self.header = header
@@ -78,13 +78,13 @@ class KeyedEncoding:
 class EncodingInfo:
     """Encoding information in readable form."""
 
-    base_offset: int
-    base_size: int
+    base_offset: int | None
+    base_size: int | None
     encodings_string: str
     encoding_offsets_string: str
     keyed_encoding_string: str
 
-    def __init__(self, base_offset: int, base_size: int):
+    def __init__(self, base_offset: int | None, base_size: int | None):
         self.base_offset = base_offset
         self.base_size = base_size
 
@@ -100,7 +100,7 @@ class FoundFormat:
     encoding_info: EncodingInfo
     content: bytes
     type: FormatEnum
-    keyed_encoding: KeyedEncoding
+    keyed_encoding: KeyedEncoding | None
 
 
 class EncodedSection:
@@ -110,7 +110,7 @@ class EncodedSection:
     # these are offsets within the parent section
     start_offset: int
     end_offset: int
-    parent_section: EncodedSection
+    parent_section: EncodedSection | None
     child_sections: list[EncodedSection]
 
     # these are only used during the search, content should be cleared when done
@@ -124,7 +124,7 @@ class EncodedSection:
         start_offset: int,
         end_offset: int,
         content: bytes,
-        parent: EncodedSection,
+        parent: EncodedSection | None,
         grouped_sections: list[EncodedSection],
     ):
         self.encoding = encoding
@@ -154,7 +154,7 @@ def try_create_section(
 
     a new section will not be created if it is a duplicate due to grouping.
     """
-    new_section: EncodedSection = None
+    new_section: EncodedSection | None = None
     valid: bool = True
 
     # if this content is not contiguous, only add it if the same content has not been found contiguously
@@ -194,7 +194,7 @@ format_scanners: list[FormatInfo] = [
 
 
 def get_encoding_info(
-    section: EncodedSection, start: int, end: int, keyed_encoding: KeyedEncoding, lznt1_encoded: bool
+    section: EncodedSection, start: int, end: int, keyed_encoding: KeyedEncoding | None, lznt1_encoded: bool
 ) -> EncodingInfo:
     """Generate readable encoding info for a found obfuscation."""
     locationInfo: EncodingInfo = EncodingInfo(start, end - start)
@@ -271,7 +271,7 @@ def try_add_found_format(
     end: int,
     content: bytes,
     type: FormatEnum,
-    keyed_encoding: KeyedEncoding,
+    keyed_encoding: KeyedEncoding | None,
     lznt1_encoded: bool,
 ):
     """Attempt to add an identified instance of a format that has been found.
