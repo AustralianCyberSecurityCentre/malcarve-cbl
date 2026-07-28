@@ -125,7 +125,7 @@ def find_hex(parent_section: EncodedSection):
         if len(match) % 2 != 0:
             unhexed: bytes = unhexlify(match[:-1])
             if different_bytes(unhexed):
-                new_section: EncodedSection = try_create_section(
+                new_section: EncodedSection | None = try_create_section(
                     EncodingEnum.BASE16, regex_match.start(), regex_match.end() - 1, unhexed, parent_section, []
                 )
                 if new_section is not None:
@@ -133,7 +133,7 @@ def find_hex(parent_section: EncodedSection):
 
             unhexed: bytes = unhexlify(match[1:])
             if different_bytes(unhexed):
-                new_section: EncodedSection = try_create_section(
+                new_section: EncodedSection | None = try_create_section(
                     EncodingEnum.BASE16, regex_match.start() + 1, regex_match.end(), unhexed, parent_section, []
                 )
                 if new_section is not None:
@@ -141,7 +141,7 @@ def find_hex(parent_section: EncodedSection):
         else:
             unhexed: bytes = unhexlify(match)
             if different_bytes(unhexed):
-                new_section: EncodedSection = try_create_section(
+                new_section: EncodedSection | None = try_create_section(
                     EncodingEnum.BASE16, regex_match.start(), regex_match.end(), unhexed, parent_section, []
                 )
                 if new_section is not None:
@@ -280,7 +280,7 @@ def find_base64(parent_section: EncodedSection):
             base64_decodes: list[bytes] = get_base64_possibilities(base64_content.strip(b"="))
             for base64_decoded in base64_decodes:
                 if different_bytes(base64_decoded):
-                    new_section: EncodedSection = try_create_section(
+                    new_section: EncodedSection | None = try_create_section(
                         EncodingEnum.BASE64,
                         regex_match.start(),
                         regex_match.end(),
@@ -336,7 +336,7 @@ def find_reverse(parent_section: EncodedSection):
     """Reverse section and add as new section."""
     # don't perform multiple reverse operations
     reversed: bool = False
-    check_section: EncodedSection = parent_section
+    check_section: EncodedSection | None = parent_section
     while check_section is not None:
         if check_section.encoding == EncodingEnum.REVERSE:
             reversed = True

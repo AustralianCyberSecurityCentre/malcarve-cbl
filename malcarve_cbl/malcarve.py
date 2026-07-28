@@ -17,9 +17,9 @@ from .unkeyed_encoding_find import (
 )
 
 
-def get_next_section(current_section: EncodedSection) -> EncodedSection:
+def get_next_section(current_section: EncodedSection) -> EncodedSection | None:
     """Get the next section of a file to be decoded."""
-    next_section: EncodedSection = None
+    next_section: EncodedSection | None = None
 
     if len(current_section.child_sections) > 0:
         next_section = current_section.child_sections[0]
@@ -44,7 +44,9 @@ def carve_buffer(input_buffer: bytes, max_depth: int) -> list[FoundFormat]:
     """Carve out potentially interesting content and PEs from a buffer of bytes."""
     found_formats: list[FoundFormat] = []
 
-    current_section: EncodedSection = EncodedSection(EncodingEnum.NONE, 0, len(input_buffer), input_buffer, None, [])
+    current_section: EncodedSection | None = EncodedSection(
+        EncodingEnum.NONE, 0, len(input_buffer), input_buffer, None, []
+    )
     while current_section is not None:
         for format in format_scanners:
             # check if the format exists in the section unencrypted

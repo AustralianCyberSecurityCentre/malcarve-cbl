@@ -7,10 +7,10 @@ from time import perf_counter_ns
 class TimerVerbosityEnum(IntEnum):
     """Flags for what information to track as part of timing."""
 
-    NONE: int = 0
-    TIME: int = 1
-    TOTAL_COUNT: int = 2
-    AVE_MIN_MAX: int = 3
+    NONE = 0
+    TIME = 1
+    TOTAL_COUNT = 2
+    AVE_MIN_MAX = 3
 
 
 class Timer:
@@ -41,7 +41,7 @@ def timerEnd(timer: Timer):
     if timer.start_ns == 0:
         raise Exception("Timer ended before started.")
     timer.finish_ns = perf_counter_ns()
-    time_ms: int = (timer.finish_ns - timer.start_ns) / 1000 / 1000
+    time_ms: int = (timer.finish_ns - timer.start_ns) // 1000 // 1000
     timer.total_ms += time_ms
     timer.count += 1
     if time_ms < timer.min_ms or timer.min_ms == 0:

@@ -4,6 +4,7 @@
 
 import os
 from ctypes import (
+    _Pointer,
     CDLL,
     POINTER,
     Structure,
@@ -76,13 +77,14 @@ def rolling_xor_decrypt(
     start_key: int,
 ) -> bytes:
     """Returns output_buffer."""
-    output_buffer_buffer: POINTER(c_uint8) = cast(
+    output_buffer_buffer: _Pointer[c_uint8] = cast(
         create_string_buffer(output_buffer_byte_count * sizeof(c_uint8)), POINTER(c_uint8)
     )
+    input_buffer_buffer: _Pointer[c_uint8] = cast(create_string_buffer(input_buffer), POINTER(c_uint8))
 
     c_rolling_xor_decrypt(
         output_buffer_buffer,
-        cast(input_buffer, POINTER(c_uint8)),
+        input_buffer_buffer,
         c_uint32(buffer_size),
         c_uint8(start_key),
     )
@@ -115,18 +117,20 @@ def rolling_xor_find(
     pattern_offset: int,
 ) -> tuple[list[int], int]:
     """Returns offsets, offset_count."""
-    offsets_buffer: POINTER(c_uint32) = cast(
+    offsets_buffer: _Pointer[c_uint32] = cast(
         create_string_buffer(offsets_element_count * sizeof(c_uint32)), POINTER(c_uint32)
     )
-    offset_count_indirect: POINTER(c_uint32) = pointer(c_uint32(0))
+    offset_count_indirect: _Pointer[c_uint32] = pointer(c_uint32(0))
+    buffer_buffer: _Pointer[c_uint8] = cast(create_string_buffer(buffer), POINTER(c_uint8))
+    pattern_buffer: _Pointer[c_uint8] = cast(create_string_buffer(pattern), POINTER(c_uint8))
 
     c_rolling_xor_find(
         offsets_buffer,
         c_uint32(offset_count_max),
         offset_count_indirect,
-        cast(buffer, POINTER(c_uint8)),
+        buffer_buffer,
         c_uint32(buffer_size),
-        cast(pattern, POINTER(c_uint8)),
+        pattern_buffer,
         c_uint32(pattern_size),
         c_uint32(pattern_offset),
     )
@@ -159,13 +163,14 @@ def xor_decrypt(
     ignore_zero: bool,
 ) -> bytes:
     """Returns output_buffer."""
-    output_buffer_buffer: POINTER(c_uint8) = cast(
+    output_buffer_buffer: _Pointer[c_uint8] = cast(
         create_string_buffer(output_buffer_byte_count * sizeof(c_uint8)), POINTER(c_uint8)
     )
+    input_buffer_buffer: _Pointer[c_uint8] = cast(create_string_buffer(input_buffer), POINTER(c_uint8))
 
     c_xor_decrypt(
         output_buffer_buffer,
-        cast(input_buffer, POINTER(c_uint8)),
+        input_buffer_buffer,
         c_uint32(buffer_size),
         c_uint64(key),
         c_uint8(key_size),
@@ -201,18 +206,20 @@ def xor_find(
     pattern_offset: int,
 ) -> tuple[list[ComplexCrypt], int]:
     """Returns results, result_count."""
-    results_buffer: POINTER(ComplexCrypt) = cast(
+    results_buffer: _Pointer[ComplexCrypt] = cast(
         create_string_buffer(results_element_count * sizeof(ComplexCrypt)), POINTER(ComplexCrypt)
     )
-    result_count_indirect: POINTER(c_uint32) = pointer(c_uint32(0))
+    result_count_indirect: _Pointer[c_uint32] = pointer(c_uint32(0))
+    buffer_buffer: _Pointer[c_uint8] = cast(create_string_buffer(buffer), POINTER(c_uint8))
+    pattern_buffer: _Pointer[c_uint8] = cast(create_string_buffer(pattern), POINTER(c_uint8))
 
     c_xor_find(
         results_buffer,
         c_uint32(result_count_max),
         result_count_indirect,
-        cast(buffer, POINTER(c_uint8)),
+        buffer_buffer,
         c_uint32(buffer_size),
-        cast(pattern, POINTER(c_uint8)),
+        pattern_buffer,
         c_uint32(pattern_size),
         c_uint32(pattern_offset),
     )
@@ -239,13 +246,14 @@ def add_decrypt(
     key: int,
 ) -> bytes:
     """Returns output_buffer."""
-    output_buffer_buffer: POINTER(c_uint8) = cast(
+    output_buffer_buffer: _Pointer[c_uint8] = cast(
         create_string_buffer(output_buffer_byte_count * sizeof(c_uint8)), POINTER(c_uint8)
     )
+    input_buffer_buffer: _Pointer[c_uint8] = cast(create_string_buffer(input_buffer), POINTER(c_uint8))
 
     c_add_decrypt(
         output_buffer_buffer,
-        cast(input_buffer, POINTER(c_uint8)),
+        input_buffer_buffer,
         c_uint32(buffer_size),
         c_uint8(key),
     )
@@ -278,18 +286,20 @@ def add_find(
     pattern_offset: int,
 ) -> tuple[list[BasicCrypt], int]:
     """Returns results, result_count."""
-    results_buffer: POINTER(BasicCrypt) = cast(
+    results_buffer: _Pointer[BasicCrypt] = cast(
         create_string_buffer(results_element_count * sizeof(BasicCrypt)), POINTER(BasicCrypt)
     )
-    result_count_indirect: POINTER(c_uint32) = pointer(c_uint32(0))
+    result_count_indirect: _Pointer[c_uint32] = pointer(c_uint32(0))
+    buffer_buffer: _Pointer[c_uint8] = cast(create_string_buffer(buffer), POINTER(c_uint8))
+    pattern_buffer: _Pointer[c_uint8] = cast(create_string_buffer(pattern), POINTER(c_uint8))
 
     c_add_find(
         results_buffer,
         c_uint32(result_count_max),
         result_count_indirect,
-        cast(buffer, POINTER(c_uint8)),
+        buffer_buffer,
         c_uint32(buffer_size),
-        cast(pattern, POINTER(c_uint8)),
+        pattern_buffer,
         c_uint32(pattern_size),
         c_uint32(pattern_offset),
     )
@@ -316,13 +326,14 @@ def rol_decrypt(
     key: int,
 ) -> bytes:
     """Returns output_buffer."""
-    output_buffer_buffer: POINTER(c_uint8) = cast(
+    output_buffer_buffer: _Pointer[c_uint8] = cast(
         create_string_buffer(output_buffer_byte_count * sizeof(c_uint8)), POINTER(c_uint8)
     )
+    input_buffer_buffer: _Pointer[c_uint8] = cast(create_string_buffer(input_buffer), POINTER(c_uint8))
 
     c_rol_decrypt(
         output_buffer_buffer,
-        cast(input_buffer, POINTER(c_uint8)),
+        input_buffer_buffer,
         c_uint32(buffer_size),
         c_uint8(key),
     )
@@ -355,18 +366,20 @@ def rol_find(
     pattern_offset: int,
 ) -> tuple[list[BasicCrypt], int]:
     """Returns results, result_count."""
-    results_buffer: POINTER(BasicCrypt) = cast(
+    results_buffer: _Pointer[BasicCrypt] = cast(
         create_string_buffer(results_element_count * sizeof(BasicCrypt)), POINTER(BasicCrypt)
     )
-    result_count_indirect: POINTER(c_uint32) = pointer(c_uint32(0))
+    result_count_indirect: _Pointer[c_uint32] = pointer(c_uint32(0))
+    buffer_buffer: _Pointer[c_uint8] = cast(create_string_buffer(buffer), POINTER(c_uint8))
+    pattern_buffer: _Pointer[c_uint8] = cast(create_string_buffer(pattern), POINTER(c_uint8))
 
     c_rol_find(
         results_buffer,
         c_uint32(result_count_max),
         result_count_indirect,
-        cast(buffer, POINTER(c_uint8)),
+        buffer_buffer,
         c_uint32(buffer_size),
-        cast(pattern, POINTER(c_uint8)),
+        pattern_buffer,
         c_uint32(pattern_size),
         c_uint32(pattern_offset),
     )

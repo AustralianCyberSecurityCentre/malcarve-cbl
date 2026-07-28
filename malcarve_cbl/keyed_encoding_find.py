@@ -176,6 +176,7 @@ def find_rols(
         if (
             results[results_index].deob_key == 4
             and (section.encoding == EncodingEnum.BASE16 or section.encoding == EncodingEnum.REVERSE)
+            and section.parent_section is not None
             and (
                 section.parent_section.encoding == EncodingEnum.BASE16
                 or section.parent_section.encoding == EncodingEnum.REVERSE
