@@ -11,7 +11,7 @@ from enum import IntEnum
 from keyword import iskeyword, issoftkeyword
 from sys import argv
 
-import black  # ty: ignore[unresolved-import]
+import black  # ty: ignore[import-not-found]
 
 
 class ParamType(IntEnum):
